@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class AlmacenService {
 
-  // En lugar de: private apiUrl = 'http://localhost:3000/api';
-private apiUrl = '/api'; // Al usar '/api', Angular usará automáticamente el mismo dominio donde esté alojado (Render o Localhost)
+  // ⚠️ En Capacitor/APK debes usar la URL absoluta de tu backend en Render:
+  private apiUrl = 'https://tu-backend.onrender.com/api'; // Reemplaza con tu URL real de Render
 
   constructor(private http: HttpClient) {}
 

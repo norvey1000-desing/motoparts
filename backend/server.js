@@ -1,9 +1,19 @@
 const express = require('express');
-const cors = require('cors');
+const cors = express.cors ? require('cors') : require('cors');
 const path = require('path');
 const { Pool } = require('pg');
 require('dotenv').config();
 
+// 🛡️ Validación estricta de variables de entorno esenciales
+const variablesRequeridas = ['DATABASE_URL'];
+const faltantes = variablesRequeridas.filter((varName) => !process.env[varName]);
+
+if (faltantes.length > 0) {
+  console.error(`❌ Error crítico: Faltan las siguientes variables de entorno en el sistema: ${faltantes.join(', ')}`);
+  process.exit(1);
+} else {
+  console.log('✅ Variables de entorno esenciales validadas correctamente.');
+}
 const app = express();
 app.use(cors());
 app.use(express.json());

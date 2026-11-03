@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../src/environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
@@ -8,9 +9,13 @@ import { Observable } from 'rxjs';
 export class AlmacenService {
 
   // ⚠️ En Capacitor/APK debes usar la URL absoluta de tu backend en Render:
-  private apiUrl = 'https://tu-backend.onrender.com/api'; // Reemplaza con tu URL real de Render
+  private apiUrl = `${environment.apiUrl}/api`; // Reemplaza con tu URL real de Render
 
   constructor(private http: HttpClient) {}
+
+  login(credentials: any) {
+  return this.http.post(`${this.apiUrl}/login`, credentials);
+}
 
   // --- Métodos de Usuarios ---
   getUsuarios(): Observable<any[]> {
@@ -27,10 +32,6 @@ export class AlmacenService {
   
   eliminarUsuario(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/usuarios/${id}`);
-  }
-
-  login(credentials: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, credentials);
   }
 
   // --- Métodos de Productos ---

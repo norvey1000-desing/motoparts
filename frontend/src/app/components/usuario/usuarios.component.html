@@ -1,0 +1,89 @@
+<app-navbar></app-navbar>
+
+<div class="p-6 max-w-7xl mx-auto space-y-6 bg-slate-950 min-h-[90vh] text-slate-100 font-sans">
+  <div class="flex justify-between items-center">
+
+  </div>
+  <!-- Resto de la tabla de usuarios... -->
+<div class="p-6 max-w-7xl mx-auto space-y-6 bg-slate-950 min-h-screen text-slate-100 font-sans">
+  <div class="flex justify-between items-center">
+    <div>
+      <h2 class="text-xl font-bold text-white flex items-center gap-2">👥 Gestión de Usuarios y Roles</h2>
+      <p class="text-xs text-slate-400">Control de acceso al personal del taller y tienda</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <button (click)="irInventario()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer">
+        📦 Inventario
+      </button>
+      <button (click)="irPOS()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow-lg transition-all cursor-pointer">
+        ⚡ POS
+      </button>
+      <button (click)="abrirModalNuevo()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow-lg transition-all cursor-pointer">
+        + Nuevo Usuario
+      </button>
+    </div>
+  </div>
+
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="border-b border-slate-800 text-xs text-slate-400 uppercase bg-slate-950/50">
+          <th class="p-4">ID</th>
+          <th class="p-4">CORREO / USUARIO</th>
+          <th class="p-4">ROL</th>
+          <th class="p-4 text-right">ACCIONES</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-800 text-xs text-slate-300">
+        <tr *ngFor="let usu of usuarios" class="hover:bg-slate-800/30">
+          <td class="p-4 font-mono text-indigo-400">#{{ usu.id }}</td>
+          <td class="p-4 font-medium text-white">{{ usu.email }}</td>
+          <td class="p-4">
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold" 
+                  [ngClass]="usu.rol === 'Admin' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'">
+              {{ usu.rol }}
+            </span>
+          </td>
+          <td class="p-4 text-right space-x-2">
+            <button (click)="abrirModalEditar(usu)" class="text-slate-400 hover:text-white cursor-pointer">Editar</button>
+            <button (click)="eliminarUsuario(usu.id)" class="text-rose-400 hover:text-rose-300 cursor-pointer">Eliminar</button>
+          </td>
+        </tr>
+        <tr *ngIf="usuarios.length === 0">
+          <td colspan="4" class="p-8 text-center text-slate-500">No hay usuarios registrados.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal de Usuario -->
+  <div *ngIf="mostrarModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-5">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-bold text-white">{{ editando ? '✏️ Editar Usuario' : '👤 Nuevo Usuario' }}</h3>
+        <button (click)="cerrarModal()" class="text-slate-400 hover:text-white text-lg cursor-pointer">&times;</button>
+      </div>
+      <form (ngSubmit)="guardarUsuario()" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Correo Electrónico</label>
+          <input type="email" [(ngModel)]="formUsuario.email" name="email" required class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Contraseña {{ editando ? '(Dejar en blanco para no cambiar)' : '' }}</label>
+          <input type="password" [(ngModel)]="formUsuario.password" name="password" [required]="!editando" placeholder="••••••••" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Rol del Sistema</label>
+          <select [(ngModel)]="formUsuario.rol" name="rol" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-indigo-500">
+            <option value="Admin">Admin (Control Total)</option>
+            <option value="Cajero">Cajero (Solo Ventas e Inventario)</option>
+          </select>
+        </div>
+        <div class="flex justify-end gap-3 pt-3 border-t border-slate-800">
+          <button type="button" (click)="cerrarModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300 cursor-pointer">Cancelar</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

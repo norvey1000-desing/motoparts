@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">motoparts.pos</string>
+    <string name="title_activity_main">motoparts.pos</string>
+    <string name="package_name">com.motoparts.pos</string>
+    <string name="custom_url_scheme">com.motoparts.pos</string>
+</resources>

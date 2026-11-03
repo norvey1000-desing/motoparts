@@ -1,0 +1,45 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: 🟢 Configurar Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: ☕ Configurar Java JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 📦 Instalar dependencias del Frontend
+        run: npm install
+        working-directory: ./frontend
+
+      - name: 🔨 Compilar Angular
+        run: npm run build -- --configuration production
+        working-directory: ./frontend
+
+      - name: 🔄 Sincronizar Capacitor con Android
+        run: npx cap sync android
+        working-directory: ./frontend
+
+      - name: 📱 Compilar APK con Gradle
+        run: ./gradlew assembleDebug
+        working-directory: ./frontend/android
+
+      - name: 📤 Subir APK generado
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: frontend/android/app/build/outputs/apk/debug/app-debug.apk

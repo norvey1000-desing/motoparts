@@ -35,7 +35,9 @@ jobs:
         working-directory: ./frontend
 
       - name: 📱 Compilar APK con Gradle
-        run: ./gradlew assembleDebug
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
         working-directory: ./frontend/android
 
       - name: 📤 Subir APK generado

@@ -163,13 +163,21 @@ app.put('/api/productos/:id', async (req, res) => {
   }
 });
 
-app.delete('/api/productos/:id', async (req, res) => {
-  const { id } = req.params;
+// Asegúrate de tener esta ruta configurada en tu servidor Express
+app.delete('/api/usuarios/:id', async (req, res) => {
   try {
-    await pool.query("DELETE FROM productos WHERE id = $1", [id]);
-    res.json({ success: true, message: 'Producto eliminado' });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    const { id } = req.params;
+    const queryText = 'DELETE FROM usuarios WHERE id = $1';
+    const result = await pool.query(queryText, [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+    }
+
+    res.json({ success: true, message: 'Usuario eliminado correctamente' });
+  } catch (error) {
+    console.error('Error al eliminar usuario:', error);
+    res.status(500).json({ success: false, message: 'Error interno en el servidor' });
   }
 });
 

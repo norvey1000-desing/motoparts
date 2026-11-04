@@ -226,7 +226,7 @@ app.get('/api/ventas', async (req, res) => {
 });
 
 app.post('/api/ventas', async (req, res) => {
-  const { cliente, cliente_id, total, metodoPago, metodo_pago, items } = req.body;
+  const { cliente, cliente_id, total, metodoPago, metodo_pago, items, vendedor } = req.body;
   try {
     let finalClienteId = cliente_id;
 
@@ -244,11 +244,12 @@ app.post('/api/ventas', async (req, res) => {
     }
 
     const pago = metodo_pago || metodoPago || 'Efectivo';
+    const nombreVendedor = vendedor || 'Admin'; // 👈 Capturamos el vendedor o ponemos Admin por defecto
 
-    // Insertar venta principal y obtener su ID con RETURNING id
+    // Insertar venta principal incluyendo la columna 'vendedor'
     const ventaRes = await pool.query(
-      "INSERT INTO ventas (cliente_id, total, metodo_pago) VALUES ($1, $2, $3) RETURNING id",
-      [finalClienteId || null, total, pago]
+      "INSERT INTO ventas (cliente_id, total, metodo_pago, vendedor) VALUES ($1, $2, $3, $4) RETURNING id",
+      [finalClienteId || null, total, pago, nombreVendedor]
     );
     const venta_id = ventaRes.rows[0].id;
 

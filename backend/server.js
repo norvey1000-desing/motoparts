@@ -43,7 +43,7 @@ async function inicializarBaseDatos() {
 inicializarBaseDatos();
 
 // ==========================================
-//              ENDPOINTS DE LA API
+//          ENDPOINTS DE LA API
 // ==========================================
 
 // 1. LOGIN
@@ -98,6 +98,30 @@ app.post('/api/usuarios', async (req, res) => {
   } catch (err) {
     console.error("❌ Error al crear usuario:", err.message);
     res.status(500).json({ error: err.message });
+  }
+});
+
+// 🔄 NUEVA: Actualizar un usuario existente (Soluciona el error 404)
+app.put('/api/usuarios/:id', async (req, res) => {
+  const { id } = req.params;
+  const { email, password, nombre, rol } = req.body;
+  try {
+    // Si envían contraseña nueva la actualizamos, si va en blanco o vacía mantenemos la anterior
+    if (password && password.trim() !== '') {
+      await pool.query(
+        "UPDATE usuarios SET email = $1, password = $2, nombre = $3, rol = $4 WHERE id = $5",
+        [email, password, nombre || '', rol || 'Cajero', id]
+      );
+    } else {
+      await pool.query(
+        "UPDATE usuarios SET email = $1, nombre = $2, rol = $3 WHERE id = $4",
+        [email, nombre || '', rol || 'Cajero', id]
+      );
+    }
+    res.json({ success: true, message: 'Usuario actualizado correctamente' });
+  } catch (err) {
+    console.error("❌ Error al actualizar usuario:", err.message);
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -267,7 +291,7 @@ app.get('/api/ventas/:id/detalle', async (req, res) => {
 });
 
 // ==========================================
-//      SERVIDOR FRONTEND DE ANGULAR
+//          SERVIDOR FRONTEND DE ANGULAR
 // ==========================================
 const frontendPath = path.join(__dirname, 'public');
 app.use(express.static(frontendPath));

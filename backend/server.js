@@ -226,6 +226,7 @@ app.get('/api/ventas', async (req, res) => {
 });
 
 app.post('/api/ventas', async (req, res) => {
+  console.log("📦 PAYLOAD RECIBIDO:", req.body);
   const { cliente, cliente_id, total, metodoPago, metodo_pago, items, vendedor } = req.body;
   try {
     let finalClienteId = cliente_id;
